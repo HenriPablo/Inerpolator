@@ -1,0 +1,203 @@
+
+/*--------------------------------------------------------*
+ * @media screen and (max-width: 640px)
+ *--------------------------------------------------------*/
+@media only screen
+    /*and (min-device-width : 320px)
+    and (max-device-width : 480px) */
+and (max-width: 640px)
+{
+
+    body{
+        background-color: #00335c;
+    }
+    /* --- HEADER AND MENU --- */
+    .mobileLogoTxt{
+        color:#78d2ff;
+        font-weight:bold;
+        font-size: 1.75em;
+        padding:1em;}
+
+    /* Styles */
+    .bodyWrapper{
+        background-color: #5f6c99;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    #titleBar { padding:0.75em; }
+
+    #titleBar strong {
+        font-family: Viga;
+        font-weight: 400;
+    }
+
+
+    /* --- INPUT FORM --- */
+    .formHeader{
+        font-size:1.25em;
+        line-height: 1.5em;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .inputFormWrapper{
+        clear:both;
+        width:100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    #interpolator label{
+        width: 45%;
+        font-size:1.5em;
+    }
+    #interpolator input{
+        border-radius: 0.25em;
+        width:20%;
+    }
+
+    #interpolator input,
+    #interpolator select
+    {
+        font-size:1.5em;
+        padding:0.25em;
+    }
+
+    #interpolator select
+    {
+        width:40%;
+        border-radius: 0.15em;
+    }
+
+    .suffix{
+        width:27%;
+        font-size:1.75em;
+        padding: 0.27em 0 0 0.25em;
+    }
+
+    .consolePanel{
+        clear:both;
+        width: auto;
+        display:block;
+        float:none;
+    }
+
+}
+
+/*-------------------------------------------------------------*
+ * END 640 PX Media Query
+ *-------------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* LG Phone 320px */
+/*
+ * @media screen and (max-width: 640px)
+ */
+
+@media  screen and (min-width: 320px) and (max-device-width: 320px) {
+    body{
+        background-color:yellow;
+        font-size:1.8em;
+    }
+    label{
+        font-size:.8em;
+    }
+}
+
+/* SAMSUG GALAXY 5.0 MEDIA PLAYER 800 px wide*/
+@media  screen and (min-width: 800px) and (max-device-width: 800px) {
+    body{
+        background-color:red;
+        font-size:1.8em;
+    }
+    label{
+        font-size:.8em;
+    }
+}
+
+/* from stackOverflow */
+/* Smartphones (portrait and landscape) ----------- */
+
+
+
+/* Smartphones (landscape) ----------- */
+@media only screen
+and (min-width : 321px) {
+    /* Styles
+    body{  background-color:khaki;}*/
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen
+and (max-width : 1365px) {
+    /* Styles */
+    /*body{  background-color:pink; }*/
+
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px) {
+    /* Styles */
+    body{  background-color: purple; }
+}
+
+/* iPads (landscape) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : landscape)
+{
+
+    body{
+        background-color: orange;
+    }
+
+}
+
+/* iPads (portrait) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+    /* Styles */
+}
+
+/* Desktops and laptops ----------- */
+@media only screen
+and (min-width : 1224px) {
+    /* Styles */
+}
+
+/* Large screens ----------- */
+@media only screen
+and (min-width : 1824px) {
+    /* Styles */
+}
+
+/* iPhone 4 ----------- */
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+    /* Styles */
+    body{  background-color: navy; }
+}
+
+/* iPhone 5 ----------- */
+/* You've spent way to much on a phone */
+
+

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="user-scalable = yes" />
+    <title>Interpolator</title>
+
+    <link rel="stylesheet" href="css/css.css" />
+    <link rel="stylesheet" href="css/responsive-menu2.css" />
+
+    <!--
+        latest attempt at media query setup based on
+        http://css-tricks.com/snippets/css/media-queries-for-standard-devices/
+
+        Smartphones (portrait and landscape)
+    -->
+    <link
+            rel="stylesheet"
+            media="screen and (min-device-width : 320px) and (max-device-width : 480px)"
+            href="css/min-width-320px-max-width-480px.css" />
+
+
+    <!-- Smartphones (portrait) -->
+    <link
+            rel="stylesheet"
+            media="screen and (max-width : 320px)"
+            href="css/max-width-320px.css" />
+
+
+
+    <!--
+
+
+
+/*  ----------- */
+@media only {
+    /* Styles */
+
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px) {
+    /* Styles */
+}
+
+/* iPads (landscape) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : landscape) {
+    /* Styles */
+}
+
+/* iPads (portrait) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+    /* Styles */
+}
+
+
+
+/* Large screens ----------- */
+@media only screen
+and (min-width : 1824px) {
+
+    /* Styles */
+}
+
+/* iPhone 4 ----------- */
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+    /* Styles */
+}
+
+
+    -->
+
+
+
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="js/questionsData.js"></script>
+    <script type="text/javascript" src="js/lookupData.js"></script>
+    <script type="text/javascript" src="js/interpolator.js"></script>
+    <script type="text/javascript" src="js/responsive-menu2.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Questrial|Source+Sans+Pro:400,700|Dosis:800|Viga|Fugaz+One|Oswald:700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Dosis:400,700,800|Lato:400,900|Cabin:400,700|Roboto+Condensed|Roboto+Slab|Roboto:700' rel='stylesheet' type='text/css'>
+    <!-- SmartMenus jQuery init -->
+    <script type="text/javascript">
+        $(function() {
+            $('#main-menu').smartmenus({
+                /* subMenusSubOffsetX: 1, , */
+               /* subMenusSubOffsetY: -8,*/
+                /* subMenusMaxWidth : function(){  return $('body').outerWidth() }  ,   */
+                    /*subMenusMinWidth : function(){  return $('body').outerWidth() }
+                ,markCurrentItem : true
+                ,markCurrentTree :true
+                ,showFunction: function($ul, complete) {
+
+                    if( $ul.hasClass('narrow')){
+                        $ul.css({'min-width': '100%', 'max-width' : 'auto', 'margin-left':0 });
+                    }
+                    $ul.fadeIn(250, complete);
+                }*/
+            });
+
+            /*
+             * lets make mega-menu contents 100% wide,this seems to be problematic with straight CSS
+             */
+
+            $('#main-menu').bind('activate.smapi', function(e, item) {
+                if( $(item).hasClass('testQuestion')){
+                    $('#questionMeuWrapper').width( $('#bodyWrapper').width() )
+                }
+
+            });
+        });
+
+
+        /* hide - show menu popup */
+        $(function() {
+            $('#menu-button').click(function() {
+                var $this = $(this),
+                        $menu = $('#main-menu');
+                if (!$this.hasClass('collapsed')) {
+                    $menu.addClass('collapsed');
+                    $this.addClass('collapsed');
+                } else {
+                    $menu.removeClass('collapsed');
+                    $this.removeClass('collapsed');
+                }
+                return false;
+            }).click();
+        });
+
+    </script>
+
+</head>
+
+<body>
+<!-- try this one: http://www.smartmenus.org/ -->
+
+
+
+<header id="header" class="header">
+    <a id="menu-button" class="mobileLogoTxt"><img src="./ART/nav.svg" width="16" height="16" /></a>
+    <!--
+    <div id="titleBar" style="float:left;">
+        <strong>Interpolator</strong>
+    </div>
+    -->
+
+    <!--<div id="navWrapper" class="navWrapper" style="float:right;">-->
+    <!-- Nav -->
+
+    <!-- Sample menu definition -->
+    <ul id="main-menu" class="sm sm-blue">
+        <li class="logo"><a href="/">Interpolator</a></li>
+        <li><a href="http://www.smartmenus.org/about/">About</a></li>
+
+        <li><a href="#">Look Up Table Figures</a>
+            <ul class="narrow">
+                <li>
+                    <a class="dataTableLink" href="#" style="display:inline-block; width:auto!important; float: left; clear:both" data-figure-table="data-table-26">Figure: 26 - Take Off Data Chart</a>
+                </li>
+                <li>
+                    <a class="dataTableLink" href="#" style="display:inline-block; width:auto!important; float: left; clear:both" data-figure-table="data-table-28">Figure: 28 - Short Field Take Off Data</a>
+                </li>
+            </ul>
+        </li>
+        <li><a href="#" class="testQuestion">Test Questions</a>
+            <ul class="mega-menu" >
+                <li >
+                    <!-- The mega drop down contents -->
+                    <div id="questionMeuWrapper" style="width:400px; max-width:100%; background-color:#fff;">
+
+                            <div id="questions">
+
+                                <div id="6753"  class="questionData">
+                                    <h4 style="cursor: pointer">Q 6753: (fig. 26)<span style="font-weight: bold; color:red;" >x</span></h4>
+                                </div>
+
+                                <div id="6754"  class="questionData">
+                                    <h4 style="cursor: pointer">Q 6754:  (fig. 26) <span style="font-weight: bold; color:green;" >x</span></h4>
+                                </div>
+
+                                <div id="6755"  class="questionData">
+                                    <h4 style="cursor: pointer">Q 6755:  (fig. 26)<span style="font-weight: bold; color:green;" >x</span></h4>
+                                </div>
+
+                                <div id="6756"  class="questionData">
+                                    <h4 style="cursor: pointer">Q 6756:  (fig. 26)<span style="font-weight: bold; color:red;" >x</span></h4>
+                                </div>
+
+                                <div id="6761"  class="questionData">
+                                    <h4 style="cursor: pointer">Q 6761:  (fig. 28)<span style="font-weight: bold; color:red;" >x</span></h4>
+                                </div>
+
+                                <div id="6762"  class="questionData">
+                                    <h4 style="cursor: pointer">Q 6762:  (fig. 28) <span style="font-weight: bold; color:orange;" >x</span></h4>
+                                </div>
+
+                                <div id="6763"  class="questionData">
+                                    <h4 style="cursor: pointer">Q 6763:  (fig. 28) <span style="font-weight: bold; color:orange;" >x</span>   </h4>
+                                </div>
+
+                            </div>
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <!-- /Nav -->
+    <!--</div>-->
+
+    <div style="clear:both"></div>
+</header>
+
+<div id="bodyWrapper" class="bodyWrapper">
+
+<div id="consolePanel" class="consolePanel"></div>
+
+    <div id="inputFormWrapper" class="inputFormWrapper">
+        <form name="interpolator" id="interpolator" method="post" action="#">
+            <input type="hidden" id="adjustForHeadwindAtTheEnd" name="adjustForHeadwindAtTheEnd" />
+            <div id="formHeader" class="formHeader">
+                <strong>Interpolate Ground Roll or Distance to Clear 50 Ft. Obstacle</strong>
+                <p>Data for question  <span id="questionNo"></span></p>
+            </div>
+
+            <div id="fieldsWrapper">
+                <label for="givenTemperature">TEMPERATURE:</label>
+                <input type="text" id="givenTemperature" name="givenTemperature" size="8" value="3" placeholder="14" />
+                <span class="suffix">C</span>
+
+                <label for="givenAltitude">ALTITUDE:</label>
+                <input type="text" id="givenAltitude" name="givenAltitude" size="8" value="6000" placeholder="2500" />
+                <span class="suffix">Ft.</span>
+
+                <label for="givenWeight">WEIGHT: </label>
+                <input type="text" id="givenWeight" name="givenWeight" size="8" value="3000" placeholder="Weight in pounds, i.e. 2200"  />
+                <span class="suffix">Lbs.</span>
+
+
+                <label for="givenHeadwind">HEADWIND:</label>
+                <input type="text" id="givenHeadwind" name="givenHeadwind" size="8" value="15" placeholder="15"  />
+                <span class="suffix">Kts.</span>
+
+
+
+                <label for="surface">SURFACE:</label>
+                <select id="surface" name="surface">
+                    <option value="hard">Hard</option>
+                    <option value="asphalt">Asphalt</option>
+                    <option value="sod">Sod</option>
+                </select>
+
+                <label for="calculate">CALCULATE:</label>
+                <select id="calculate" name="calculate">
+                    <option value="takeOffDistance">Takeoff Dist.</option>
+                    <option value="groundRoll">Ground Roll</option>
+                </select>
+
+            </div>
+
+            <div id="calculateBtnWrapper" class="calculateBtnWrapper">
+                <input type="submit" id="test" value="CALCULATE" />
+            </div>
+
+        </form>
+    </div>
+
+    <div id="contentPanel" class="contentPanel">
+        <div class="intro" id="intro">Performance Interpolator - introduction</div>
+    </div>
+
+</div><!-- end body wrapper -->
+
+<footer id="footer" class="footer" >CREDITS</footer>
+
+</body>
+</html>
