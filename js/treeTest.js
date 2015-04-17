@@ -326,18 +326,21 @@ var interpol = {
 
             /* PART 2 */
             /* increase unit high weight and low altitude headwind */
-            var iuB = d3 / ( ( highHeadwindA - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT );
+            var iuB = interpol.getHeadwindIncreaseUnit( d3, highHeadwindA, lowHeadwindA );
+
             /* high weight and low altitude takeoff distance */
-            var corrDistC = lowDistanceC - ( (givenHeadwind - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT * iuB );
+            var corrDistC = interpol.getAdjustedDistance( lowDistanceC, givenHeadwind, lowHeadwindA, iuB );
 
 
             /* increase unit for high weight and high altitude headwind */
-            var iuC = d4 / ( ( highHeadwindA - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT );
-            var corrDistD = highDistanceC - ( ( givenHeadwind - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT * iuC );
+            var iuC = interpol.getHeadwindIncreaseUnit( d4, highHeadwindA, lowHeadwindA )
+
+            var corrDistD = interpol.getAdjustedDistance( highDistanceC, givenHeadwind, lowHeadwindA, iuC )
+
 
             /* high weight take off difference for low and high altitudes */
             var highWeightAltDiffB = corrDistD - corrDistC;
-            var highWeightAltIU = highWeightAltDiffB / ( ( highAltitudeA - lowAltitudeA ) / interpol.ALTITUDE_INCREMENT_UNIT )
+            var highWeightAltIU = interpol.getWeightIncreaseUnit(  highWeightAltDiffB, highAltitudeA, lowAltitudeA );
 
             /* final takeoff dist for HIGH WEIGHT at given altitude */
             var finalHighWeightTakeOffDist = corrDistC  + (( givenAltitude - lowAltitudeA ) / interpol.ALTITUDE_INCREMENT_UNIT ) * highWeightAltIU ;
