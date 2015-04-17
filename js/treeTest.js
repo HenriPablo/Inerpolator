@@ -104,19 +104,24 @@ var interpol = {
         return dif( lowAndHighValues ) / incrementUnit;
 
     },
-    getFactors : function(number) {
-        var i = 2;
-        var f = [];
-        for (i; i<= number; i++  ) {
-            if (number % i == 0) {
-                // number /= i;
-                if( !(f.indexOf(i) > -1) ){
-                    f.push( i )
-                }
-            }
-        }
-        return f;
+
+    getHeadwindIncreaseUnit : function( distanceDifference, highWind, lowWind ){
+        return distanceDifference / ( ( highWind - lowWind ) / interpol.HEAD_WIND_INCREMENT_UNIT );
+
     },
+
+    getAdjustedDistance : function( distance, givenWind, lowWind, increaseUnit ){
+        return distance - ( (givenWind - lowWind ) / interpol.HEAD_WIND_INCREMENT_UNIT * increaseUnit );
+    },
+
+    getWeightIncreaseUnit : function( weightDifference, highAltitude, lowAltitude ){
+        return weightDifference / ( ( highAltitude - lowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT );
+    },
+
+    getFinalTakeOffDistance : function( adjustedDistance, givenAltitude, lowAltitude, increaseUnit ){
+       return adjustedDistance  + (( givenAltitude - lowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnit;
+    },
+
 
     getLowAndHigh : function( data, middleValue ){
 
@@ -301,21 +306,22 @@ var interpol = {
 
             /* PART 1 */
             /* increase unit low weight and low altitude headwind */
-            var iuA = d1 / ( ( highHeadwindA - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT );
+            var iuA =  interpol.getHeadwindIncreaseUnit( d1, highHeadwindA, lowHeadwindA );
             /* low weight and low altitude takeoff distance */
-            var corrDistA = lowDistanceA - ( (givenHeadwind - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT * iuA );
+            var corrDistA = interpol.getAdjustedDistance( lowDistanceA, givenHeadwind, lowHeadwindA, iuA );
 
 
             /* increase unit for low weight and high altitude headwind */
-            var iuB = d2 / ( ( highHeadwindA - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT );
-            var corrDistB = highDistanceA - ( ( givenHeadwind - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT * iuB );
+            var iuB =  interpol.getHeadwindIncreaseUnit( d2, highHeadwindA, lowHeadwindA );
+
+            var corrDistB = interpol.getAdjustedDistance( highDistanceA, givenHeadwind, lowHeadwindA, iuB );
 
             /* low weight take off difference for low and high altitudes */
             var lowWeightAltDiffA = corrDistB - corrDistA;
-            var lowWeightAltIU = lowWeightAltDiffA / ( ( highAltitudeA - lowAltitudeA ) / interpol.ALTITUDE_INCREMENT_UNIT )
+            var lowWeightAltIU = interpol.getWeightIncreaseUnit(  lowWeightAltDiffA, highAltitudeA, lowAltitudeA );
 
             /* final takeoff dist for low weight at given altitude */
-            var finalLowWeightTakeOffDist = corrDistA  + (( givenAltitude - lowAltitudeA ) / interpol.ALTITUDE_INCREMENT_UNIT ) * lowWeightAltIU ;
+            var finalLowWeightTakeOffDist = interpol.getFinalTakeOffDistance( corrDistA, givenAltitude, lowAltitudeA, lowWeightAltIU );
 
 
             /* PART 2 */
@@ -342,6 +348,7 @@ var interpol = {
             /* final increase unit */
             var finalIU = finalDiff / ( (highWeight - lowWeight ) / interpol.WEIGHT_INCREMENT_UNIT );
             final = finalLowWeightTakeOffDist + ( ( ( givenWeight - lowWeight) / interpol.WEIGHT_INCREMENT_UNIT ) * finalIU );
+            console.log( final );
         }
 
         /* start question 1 */
