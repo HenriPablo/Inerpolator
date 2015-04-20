@@ -122,6 +122,10 @@ var interpol = {
        return adjustedDistance  + (( givenAltitude - lowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnit;
     },
 
+    getFinalIncreaseUnit : function( finalDifference, highWeight, lowWeight ){
+        return finalDifference / ( (highWeight - lowWeight ) / interpol.WEIGHT_INCREMENT_UNIT );
+    },
+
 
     getLowAndHigh : function( data, middleValue ){
 
@@ -343,13 +347,15 @@ var interpol = {
             var highWeightAltIU = interpol.getWeightIncreaseUnit(  highWeightAltDiffB, highAltitudeA, lowAltitudeA );
 
             /* final takeoff dist for HIGH WEIGHT at given altitude */
-            var finalHighWeightTakeOffDist = corrDistC  + (( givenAltitude - lowAltitudeA ) / interpol.ALTITUDE_INCREMENT_UNIT ) * highWeightAltIU ;
+            var finalHighWeightTakeOffDist = interpol.getFinalTakeOffDistance( corrDistC, givenAltitude, lowAltitudeA, highWeightAltIU );
+
 
             /* final dist diff */
             var finalDiff = finalHighWeightTakeOffDist - finalLowWeightTakeOffDist;
 
             /* final increase unit */
-            var finalIU = finalDiff / ( (highWeight - lowWeight ) / interpol.WEIGHT_INCREMENT_UNIT );
+            var finalIU = interpol.getFinalIncreaseUnit( finalDiff, highWeight, lowWeight );
+
             final = finalLowWeightTakeOffDist + ( ( ( givenWeight - lowWeight) / interpol.WEIGHT_INCREMENT_UNIT ) * finalIU );
             console.log( final );
         }
