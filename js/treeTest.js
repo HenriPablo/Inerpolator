@@ -411,7 +411,7 @@ var interpol = {
 
             // find takeoff difference required for 3000 pressure altitude
             correctedDistanceDiff = correctedDistanceB - correctedDistanceA;
-            increaseUnitFinal = interpol.getFinalIncreaseUnit( correctedDistanceDiff, givenWeight, lowWeight ); /* expecting her 4.5 */
+            increaseUnitFinal = interpol.getWeightIncreaseUnit( correctedDistanceDiff, d.nearestHighAltitude, d.nearestLowAltitude ); /* expecting her 4.5 */
               //  correctedDistanceDiff / 25; /* expecting her 4.5 */
             final = correctedDistanceA + ( ((givenAltitude - lowAltitudeA) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnitFinal );// 652.5
         }
