@@ -389,8 +389,10 @@ var interpol = {
             d.weightMatch == true && q.calculate == "groundRoll" )
         {
             // answer expects 8ft,  we get 1.6 ft per 100 feet increase
-            increaseUnitA = distanceDiffA / ( ( highAltitudeA - lowAltitudeA ) / interpol.ALTITUDE_INCREMENT_UNIT );
-            final = lowDistanceA + ( ( ( givenAltitude - lowAltitudeA ) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnitA ); //237
+            increaseUnitA = interpol.getWeightIncreaseUnit( distanceDiffA, highAltitudeA, lowAltitudeA );
+                //distanceDiffA / ( ( highAltitudeA - lowAltitudeA ) / interpol.ALTITUDE_INCREMENT_UNIT );
+            final = interpol.getFinalTakeOffDistance( lowDistanceA ,givenAltitude, lowAltitudeA, increaseUnitA );
+                //lowDistanceA + ( ( ( givenAltitude - lowAltitudeA ) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnitA ); //237
         }/* question 2 */
 
         /* start question 3 */
@@ -399,15 +401,18 @@ var interpol = {
             d.temperatureMatch == false &&
             d.weightMatch == false )
         {
-            increaseUnitA = lowDistanceDif / ( (highWeight - lowWeight ) / interpol.WEIGHT_INCREMENT_UNIT ); // 52.5
-            correctedDistanceA = lowDistanceA + ( ( (givenWeight - lowWeight) / interpol.WEIGHT_INCREMENT_UNIT) * increaseUnitA ); //630
+            increaseUnitA = interpol.getFinalIncreaseUnit( lowDistanceDif, highWeight, lowWeight );
+                //lowDistanceDif / ( (highWeight - lowWeight ) / interpol.WEIGHT_INCREMENT_UNIT ); // 52.5
+            correctedDistanceA = interpol.getFinalTakeOffDistance( lowDistanceA, givenWeight, lowWeight, increaseUnitA );
+                //lowDistanceA + ( ( (givenWeight - lowWeight) / interpol.WEIGHT_INCREMENT_UNIT) * increaseUnitA ); //630
 
             increaseUnitB = highDistanceDif / ( ( highWeight - lowWeight ) / interpol.WEIGHT_INCREMENT_UNIT );//63.75
             correctedDistanceB = highDistanceA + ( ( ( givenWeight - lowWeight) / interpol.WEIGHT_INCREMENT_UNIT ) * increaseUnitB ); // 742.5
 
             // find takeoff difference required for 3000 pressure altitude
             correctedDistanceDiff = correctedDistanceB - correctedDistanceA;
-            increaseUnitFinal = correctedDistanceDiff / 25;
+            increaseUnitFinal = interpol.getFinalIncreaseUnit( correctedDistanceDiff, givenWeight, lowWeight ); /* expecting her 4.5 */
+              //  correctedDistanceDiff / 25; /* expecting her 4.5 */
             final = correctedDistanceA + ( ((givenAltitude - lowAltitudeA) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnitFinal );// 652.5
         }
         /* end question 3 */
@@ -1175,7 +1180,7 @@ if( n2.altitudeMatch == false &&
 }
 
 var a2 = interpol.calculateDistance(q6754, n2);//260.70
-var s1 = 0;
+
 
 
 /* 6755 */
@@ -1206,13 +1211,14 @@ if( n3.altitudeMatch == false &&
 
     // find takeoff difference required for 3000 pressure altitude
     var tDiff = t2 - t1;
-    var tDifIncrease = tDiff / 25;
+    var tDifIncrease = tDiff / 25; /* expecting her 4.5 */
     var n3Final = t1 + ( ((q6755.pressurealtitude - n3.nearestLowAltitude) / 100 ) * tDifIncrease );// 652.5
 
     // correct for non standard temp
     var n3FinalCorrected = interpol.temperatureCorrectByDegree( n3Final, q6755.temperature, n3.nearestLowTemperature, q6755.pressurealtitude, n3.nearestLowAltitude ); // 717.75
 }
 var a3 = interpol.calculateDistance( q6755, n3 );// 717.75
+var s1 = 0;
 
 
 
