@@ -427,9 +427,10 @@ var interpol = {
             d.lowAndHighTemperatureMatch == true &&
             q.calculate == "takeOffDistance")
         {
-            var tempDifference = d.nearestHighTemperature - interpol.givenTemperature;
+            //var tempDifference = d.nearestHighTemperature - interpol.givenTemperature;
 
-            var a = ( d.nearestHighAltitude - d.nearestLowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT;
+            var a = interpol.getWeightIncreaseUnit( lowHighDistanceDiff, d.nearestHighAltitude, d.nearestLowAltitude )
+                //( d.nearestHighAltitude - d.nearestLowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT;
             //a = a / 100;
 
             var f = ( q.pressurealtitude - d.nearestLowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT;
