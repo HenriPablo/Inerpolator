@@ -15,6 +15,7 @@ var interpol = {
     HEAD_WIND_INCREMENT_UNIT    : 5,
     HEAD_WIND_CORRECTION_INCREMENT : 10,
     HEAD_WIND_CORRECTION_PERCENT: 7,
+    TEMPERATURE_INCREMENT_UNIT : 1,
 
     temperatureCorrectByPercent : function( distance, givenTemperature, temperatureAtAltitude ){
         var t = (givenTemperature - temperatureAtAltitude);
@@ -120,6 +121,13 @@ var interpol = {
 
     getFinalTakeOffDistance : function( adjustedDistance, givenAltitude, lowAltitude, increaseUnit ){
        return adjustedDistance  + (( givenAltitude - lowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnit;
+    },
+    /* TODO: for questions 6 and 7 */
+    getIncreaseUnitByTemperature : function( distance, highTemperature, lowTemperature ){
+        return distance / ( ( highTemperature - lowTemperature ) / interpol.TEMPERATURE_INCREMENT_UNIT );
+    },
+    getFinalTakeOffDistanceByWeight : function( distance, givenWeight, nearestLowWeight, increaseUnit ){
+        return distance + ((givenWeight - nearestLowWeight) / interpol.WEIGHT_INCREMENT_UNIT ) * increaseUnit;
     },
 
     getFinalIncreaseUnit : function( finalDifference, highWeight, lowWeight ){
@@ -445,8 +453,10 @@ var interpol = {
         )
         {
             lowHighDistanceDiff = highDistanceA - lowDistanceA; // 330
-            increaseUnitA =  lowHighDistanceDiff / ( ( n5.nearestHighWeight - n5.nearestLowWeight ) / interpol.WEIGHT_INCREMENT_UNIT ); // 82.5
-            final = lowDistanceA + ( increaseUnitA * ( ( q6761.weight - n5.nearestLowWeight ) / interpol.WEIGHT_INCREMENT_UNIT ) ); // 1785
+            increaseUnitA =  interpol.getFinalIncreaseUnit(lowHighDistanceDiff, n5.nearestHighWeight, n5.nearestLowWeight );
+              //  lowHighDistanceDiff / ( ( n5.nearestHighWeight - n5.nearestLowWeight ) / interpol.WEIGHT_INCREMENT_UNIT ); // 82.5
+            final = interpol.getFinalTakeOffDistanceByWeight( lowDistanceA, q6761.weight, n5.nearestLowWeight, increaseUnitA )
+                //lowDistanceA + ( increaseUnitA * ( ( q6761.weight - n5.nearestLowWeight ) / interpol.WEIGHT_INCREMENT_UNIT ) ); // 1785
         }
 
         /* end question 5 */
@@ -460,6 +470,7 @@ var interpol = {
             d.lowAndHighTemperatureMatch == false
         )
         {
+            var increaseUnitA = interpol.getWeightIncreaseUnit((lowDistanceA ), q.temperature, d.nearestLowTemperature)
             lowDistanceA = lowDistanceA + ( (q.temperature - d.nearestLowTemperature)  * 15 ); // 2,225
 
             lowDistanceB = lowDistanceB + ( ( d.nearestHighTemperature - q.temperature ) * 17 );// 2,465
@@ -486,7 +497,9 @@ var interpol = {
                 distDiff = distDiff * -1;
             }
             // distance of increase per 1C of temp increase
-            increaseUnitA = distDiff / (d.nearestHighTemperature - d.nearestLowTemperature );
+
+            var increaseUnitA = interpol.getIncreaseUnitByTemperature( distanceDiffA, d.nearestHighTemperature, d.nearestLowTemperature );
+            // = distDiff / (d.nearestHighTemperature - d.nearestLowTemperature );
             var tempDifference = d.nearestHighTemperature - q.temperature;
             final = d.nearestLowTakeOffDistance + ( tempDifference * increaseUnitA );
         }
@@ -1255,8 +1268,6 @@ if( n4.altitudeMatch == false &&
 }
 var a4 = interpol.calculateDistance( q6756, n4 );// 1331
 
-var s1 = 0;
-
 /* 6761 */
 var q6761 = questionsData["6761"];
 var n5 = test(
@@ -1281,6 +1292,7 @@ if( n5.altitudeMatch == true &&
     n5Final = interpol.correctForHeadwind( n5Final, q6761.headwindCorrection );   // 1725.4
 }
 var a5 = interpol.calculateDistance( q6761, n5); // 1725.4
+var s1 = 0;
 
 /* 6762 */
 var q6762 = questionsData["6762"];
