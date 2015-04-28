@@ -427,17 +427,11 @@ var interpol = {
             d.lowAndHighTemperatureMatch == true &&
             q.calculate == "takeOffDistance")
         {
-            //var tempDifference = d.nearestHighTemperature - interpol.givenTemperature;
 
-            var a = interpol.getWeightIncreaseUnit( lowHighDistanceDiff, d.nearestHighAltitude, d.nearestLowAltitude )
-                //( d.nearestHighAltitude - d.nearestLowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT;
-            //a = a / 100;
+            var a = interpol.getWeightIncreaseUnit( lowHighDistanceDiff, d.nearestHighAltitude, d.nearestLowAltitude );
 
-            var f = ( q.pressurealtitude - d.nearestLowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT;
+            final = interpol.getFinalTakeOffDistance( lowDistanceA, q.pressurealtitude, d.nearestLowAltitude, a );
 
-            increaseUnitA = lowHighDistanceDiff / a;
-
-            final = lowDistanceA + ( f * increaseUnitA ); // 1331
         }
         /* end question 4 */
 
@@ -1219,7 +1213,7 @@ if( n3.altitudeMatch == false &&
     var n3FinalCorrected = interpol.temperatureCorrectByDegree( n3Final, q6755.temperature, n3.nearestLowTemperature, q6755.pressurealtitude, n3.nearestLowAltitude ); // 717.75
 }
 var a3 = interpol.calculateDistance( q6755, n3 );// 717.75
-var s1 = 0;
+
 
 
 
@@ -1260,6 +1254,8 @@ if( n4.altitudeMatch == false &&
 
 }
 var a4 = interpol.calculateDistance( q6756, n4 );// 1331
+
+var s1 = 0;
 
 /* 6761 */
 var q6761 = questionsData["6761"];
