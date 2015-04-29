@@ -126,6 +126,9 @@ var interpol = {
     getIncreaseUnitByTemperature : function( distance, highTemperature, lowTemperature ){
         return distance / ( ( highTemperature - lowTemperature ) / interpol.TEMPERATURE_INCREMENT_UNIT );
     },
+    getFinalTakeOffDistanceByTemperature : function ( distance, nearestHighTemperature, givenTemperature, increaseUnit ) {
+        return distance + ( (nearestHighTemperature - givenTemperature ) / interpol.TEMPERATURE_INCREMENT_UNIT ) * increaseUnit;
+    },
     getFinalTakeOffDistanceByWeight : function( distance, givenWeight, nearestLowWeight, increaseUnit ){
         return distance + ((givenWeight - nearestLowWeight) / interpol.WEIGHT_INCREMENT_UNIT ) * increaseUnit;
     },
@@ -499,9 +502,11 @@ var interpol = {
             // distance of increase per 1C of temp increase
 
             var increaseUnitA = interpol.getIncreaseUnitByTemperature( distanceDiffA, d.nearestHighTemperature, d.nearestLowTemperature );
-            // = distDiff / (d.nearestHighTemperature - d.nearestLowTemperature );
+            var z = distDiff / (d.nearestHighTemperature - d.nearestLowTemperature );
             var tempDifference = d.nearestHighTemperature - q.temperature;
-            final = d.nearestLowTakeOffDistance + ( tempDifference * increaseUnitA );
+            final = interpol.getFinalTakeOffDistanceByTemperature(d.nearestLowTakeOffDistance, d.nearestHighTemperature, q.temperature, increaseUnitA  );
+            var x = d.nearestLowTakeOffDistance + ( tempDifference * increaseUnitA );
+            var xx =  0;
         }
         /* end question 7 */
 
