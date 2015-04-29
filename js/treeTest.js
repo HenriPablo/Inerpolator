@@ -473,15 +473,17 @@ var interpol = {
             d.lowAndHighTemperatureMatch == false
         )
         {
-            var increaseUnitA = interpol.getWeightIncreaseUnit((lowDistanceA ), q.temperature, d.nearestLowTemperature)
-            lowDistanceA = lowDistanceA + ( (q.temperature - d.nearestLowTemperature)  * 15 ); // 2,225
+            var increaseUnitA = interpol.getIncreaseUnitByTemperature( distanceDiffA , d.nearestHighTemperature, d.nearestLowTemperature);
+            lowDistanceA = interpol.getFinalTakeOffDistanceByTemperature( lowDistanceA, q.temperature, d.nearestLowTemperature, increaseUnitA ); // 2,225
 
-            lowDistanceB = lowDistanceB + ( ( d.nearestHighTemperature - q.temperature ) * 17 );// 2,465
+	        var increaseUnitB = interpol.getIncreaseUnitByTemperature( distanceDiffB, d.nearestHighTemperature, d.nearestLowTemperature );
+            lowDistanceB = interpol.getFinalTakeOffDistanceByTemperature( lowDistanceB, d.nearestHighTemperature, q.temperature, increaseUnitB );// 2,465
 
             var n6Diff = lowDistanceB - lowDistanceA; // 240
 
-            var distIncreaseUnit = n6Diff / ( (d.nearestHighAltitude - d.nearestLowAltitude) / interpol.ALTITUDE_INCREMENT_UNIT );// 24
-            final = dist1 + ( (( q.pressurealtitude - d.nearestLowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT ) * distIncreaseUnit ); // 2,345
+            var distIncreaseUnit = interpol.getWeightIncreaseUnit( n6Diff, d.nearestHighAltitude, d.nearestLowAltitude );
+
+            final = interpol.getFinalTakeOffDistance(lowDistanceA, q.pressurealtitude, d.nearestLowAltitude,  distIncreaseUnit );
         }
         /* end question 6 */
 
@@ -495,18 +497,9 @@ var interpol = {
             d.lowAndHighTemperatureMatch == false )
         {
 
-            distDiff = lowDistanceA - highDistanceA;  // 160
-            if( distDiff < 0 ){
-                distDiff = distDiff * -1;
-            }
             // distance of increase per 1C of temp increase
-
             var increaseUnitA = interpol.getIncreaseUnitByTemperature( distanceDiffA, d.nearestHighTemperature, d.nearestLowTemperature );
-            var z = distDiff / (d.nearestHighTemperature - d.nearestLowTemperature );
-            var tempDifference = d.nearestHighTemperature - q.temperature;
             final = interpol.getFinalTakeOffDistanceByTemperature(d.nearestLowTakeOffDistance, d.nearestHighTemperature, q.temperature, increaseUnitA  );
-            var x = d.nearestLowTakeOffDistance + ( tempDifference * increaseUnitA );
-            var xx =  0;
         }
         /* end question 7 */
 
@@ -1333,6 +1326,8 @@ if( n6.altitudeMatch == false &&
 
 }
 var a6 = interpol.calculateDistance( q6762, n6 );  // 2,462.25
+var s1= 0;
+
 
 /* 6763 */
 var q6763 = questionsData["6763"];
@@ -1370,4 +1365,3 @@ if( n7.altitudeMatch == true &&
 
 }
 var a7 = interpol.calculateDistance( q6763, n7 );  // 2024.784
-var s1= 0;
