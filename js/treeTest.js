@@ -26,7 +26,6 @@ var interpol = {
         }
         return distance * ( 1 + cnt);
     },
-    //tempTest : function( t, Q, d ){},
 
     temperatureCorrectByDegree : function( distance, question, /*givenTermperature, nearestLowTemperarure, pressureAltitude, nearestLowAltitude,*/ lookUpData    ){
         /* standard temp change is 1 deg. per 500 or 2 deg. per 1000 */
@@ -220,6 +219,8 @@ var interpol = {
 
         var distanceDiffA = 0;
         var distanceDiffB = 0;
+        var distanceDiffC = 0;
+        var distanceDiffD = 0;
 
         var lowHighDistanceDiff = 0;
         var lowDistanceDif = 0;
@@ -489,7 +490,6 @@ var interpol = {
             d.lowAndHighAltitudesMatch == true &&
             d.lowAndHighTemperatureMatch == false )
         {
-
             // distance of increase per 1C of temp increase
             var increaseUnitA = interpol.getIncreaseUnitByTemperature( distanceDiffA, d.nearestHighTemperature, d.nearestLowTemperature );
             final = interpol.getFinalTakeOffDistanceByTemperature(d.nearestLowTakeOffDistance, d.nearestHighTemperature, q.temperature, increaseUnitA  );
