@@ -122,13 +122,15 @@ var interpol = {
     getFinalTakeOffDistance : function( adjustedDistance, givenAltitude, lowAltitude, increaseUnit ){
        return adjustedDistance  + (( givenAltitude - lowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnit;
     },
-    /* TODO: for questions 6 and 7 */
+
     getIncreaseUnitByTemperature : function( distance, highTemperature, lowTemperature ){
         return distance / ( ( highTemperature - lowTemperature ) / interpol.TEMPERATURE_INCREMENT_UNIT );
     },
+
     getFinalTakeOffDistanceByTemperature : function ( distance, nearestHighTemperature, givenTemperature, increaseUnit ) {
         return distance + ( (nearestHighTemperature - givenTemperature ) / interpol.TEMPERATURE_INCREMENT_UNIT ) * increaseUnit;
     },
+
     getFinalTakeOffDistanceByWeight : function( distance, givenWeight, nearestLowWeight, increaseUnit ){
         return distance + ((givenWeight - nearestLowWeight) / interpol.WEIGHT_INCREMENT_UNIT ) * increaseUnit;
     },
@@ -377,17 +379,16 @@ var interpol = {
             d.temperatureMatch == false &&
             d.weightMatch == false )
         {
-            increaseUnitA = distanceDiffA / ( (highHeadwindA - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT ); // 41.7
-            correctedDistanceA = lowDistanceA - ( ( (givenHeadwind - lowHeadwindA) / interpol.HEAD_WIND_INCREMENT_UNIT )  * increaseUnitA ); // 161.6
+            increaseUnitA = interpol.getHeadwindIncreaseUnit(distanceDiffA, highHeadwindA, lowHeadwindA);
+            correctedDistanceA = interpol.getAdjustedDistance( lowDistanceA, givenHeadwind, lowHeadwindA, increaseUnitA );
 
-            increaseUnitB = distanceDiffB / ( (highHeadwindA - lowHeadwindA ) / interpol.HEAD_WIND_INCREMENT_UNIT ); // 56.7
-            correctedDistanceB = lowDistanceB - ( ( (givenHeadwind - lowHeadwindA) / interpol.HEAD_WIND_INCREMENT_UNIT )  * increaseUnitB ); // 256.6
+            increaseUnitB = interpol.getHeadwindIncreaseUnit(distanceDiffB, highHeadwindA, lowHeadwindA);
+            correctedDistanceB = interpol.getAdjustedDistance( lowDistanceB, givenHeadwind, lowHeadwindA, increaseUnitB );
 
             correctedDistanceDiff = correctedDistanceB - correctedDistanceA;
 
-            increaseUnitA  =  correctedDistanceDiff / ( (highWeight - lowWeight) / interpol.WEIGHT_INCREMENT_UNIT ); // 23.75
-
-            final = correctedDistanceA +  (  ( ( givenWeight - lowWeight) / interpol.WEIGHT_INCREMENT_UNIT ) * increaseUnitA ); // 209.1
+            increaseUnitA  =  interpol.getFinalIncreaseUnit (correctedDistanceDiff, highWeight, lowWeight);
+            final = interpol.getFinalTakeOffDistanceByWeight( correctedDistanceA, givenWeight, lowWeight, increaseUnitA );
         }
         /* end question 1 */
 
@@ -1143,6 +1144,7 @@ if( n1.altitudeMatch == true &&
 
 }
 var a1 = interpol.calculateDistance( q6753, n1 );// 230.01
+var s1= 0;
 
 /* 6754 */
 var q6754 = questionsData["6754"];
@@ -1319,7 +1321,7 @@ if( n6.altitudeMatch == false &&
 
 }
 var a6 = interpol.calculateDistance( q6762, n6 );  // 2,462.25
-var s1= 0;
+
 
 
 /* 6763 */
