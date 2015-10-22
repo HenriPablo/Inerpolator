@@ -520,8 +520,6 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
     interpol.givenTemperature = givenTemperature;
     interpol.givenPressuerAltitude = givenPressureAltitude;
 
-
-
     var tree = {};
     var nearest = {
         "weightMatch": false,
