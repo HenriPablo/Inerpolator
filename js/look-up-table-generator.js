@@ -10,6 +10,7 @@ var interpol = {
 
     STANDARD_TEMP               : 15, // standard temperature at sea level 15 degrees Celsius
     WEIGHT_INCREMENT_UNIT       : 100,
+    MAX_WEIGHT                  :5500, // look up table will be populated up to this widht
     DISTANCE_INCREMENT_UNIT     : 100,
     ALTITUDE_INCREMENT_UNIT     : 100,
     HEAD_WIND_INCREMENT_UNIT    : 5,
@@ -522,7 +523,128 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
 
     var tree = {};
 
+    var nearest = {
+        "weightMatch": false,
+        "headWindMatch": false,
+        "altitudeMatch": false,
+        "temperatureMatch": false,
 
+        "nearestLowWeight" : -1,
+        "nearestHighWeight" : -1,
+
+        "nearestLowHeadwind" : -1,
+        "nearestHighHeadwind" : -1,
+
+        "nearestLowAltitude" : -1,
+        "nearestHighAltitude" : -1,
+
+        "nearestLowTemperature" : -1,
+        "nearestHighTemperature" : -1,
+
+        "nearestLowGroundRoll" : -1,
+        "nearestHighGroundRoll": -1,
+
+        "nearestLowTakeOffDistance" : -1,
+        "nearestHighTakeOffDistance" : -1,
+
+        "nearestLowGroundRoll2" : -1,
+        "nearestHighGroundRoll2": -1,
+
+        "nearestLowTakeOffDistance2" : -1,
+        "nearestHighTakeOffDistance2" : -1,
+
+        "nearestLowGroundRoll3" : -1,
+        "nearestHighGroundRoll3": -1,
+
+        "nearestLowTakeOffDistance3" : -1,
+        "nearestHighTakeOffDistance3" : -1,
+
+        "nearestLowGroundRoll4" : -1,
+        "nearestHighGroundRoll4": -1,
+
+        "nearestLowTakeOffDistance4" : -1,
+        "nearestHighTakeOffDistance4" : -1,
+
+        "lowWeight": {
+            "weight": -1,
+
+            "lowWind": {
+                "speed": -1,
+
+                "lowAltitude" :{
+                    "altitude": -1,
+                    "temperature": -1,
+                    "takeOffDistance": -1,
+                    "groundRoll": -1
+                },
+
+                "highAltitude" :{
+                    "altitude": -1,
+                    "temperature": -1,
+                    "takeOffDistance": -1,
+                    "groundRoll": -1
+                }
+            },
+
+            "highWind": {
+                "speed": -1,
+                "lowAltitude" :{
+                    "altitude": -1,
+                    "temperature": -1,
+                    "takeOffDistance": -1,
+                    "groundRoll": -1
+                },
+
+                "highAltitude" :{
+                    "altitude": -1,
+                    "temperature": -1,
+                    "takeOffDistance": -1,
+                    "groundRoll": -1
+                }
+            }
+        },
+
+        "highWeight": {
+            "weight" : -1,
+
+            "lowWind": {
+                "speed": -1,
+                "lowAltitude" :{
+                    "altitude": -1,
+                    "temperature": -1,
+                    "takeOffDistance": -1,
+                    "groundRoll": -1
+                },
+
+                "highAltitude" :{
+                    "altitude": -1,
+                    "temperature": -1,
+                    "takeOffDistance": -1,
+                    "groundRoll": -1
+                }
+
+            },
+
+            "highWind": {
+                "speed": -1,
+                "lowAltitude" :{
+                    "altitude": -1,
+                    "temperature": -1,
+                    "takeOffDistance": -1,
+                    "groundRoll": -1
+                },
+
+                "highAltitude" :{
+                    "altitude": -1,
+                    "temperature": -1,
+                    "takeOffDistance": -1,
+                    "groundRoll": -1
+                }
+
+            }
+        }
+
+    };
 
     var tempWeight ={};
     var temporaryAltitudes = [];
@@ -536,6 +658,7 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
     var temperaturePath = "";
 
 
+    console.dir( takeOffData );
 
     /* TAKE OFF DATA LOOP */
     for( var grossWeightLb in takeOffData ){
@@ -552,8 +675,20 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
              * START init loop of WEIGHTS
              *
              */
+            var nextWeight = 0;
             for( var key in weight ) {
                 if (weight.hasOwnProperty(key)) {
+                    nextWeight = parseInt( key ) + 100 ;
+
+                    // fill in missing weight in 100 LB increments
+                    while( typeof weight[ nextWeight ] === "undefined" && key < interpol.MAX_WEIGHT ){
+                        if( nextWeight === interpol.MAX_WEIGHT ){
+                            break
+                        } else {
+                            weight[ nextWeight ] = Object();
+                            nextWeight = nextWeight + 100;
+                        }
+                    }
 
                     if( parseInt( key ) == parseInt( interpol.givenWeight) ){
                         tempWeight = {};
@@ -788,3 +923,5 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
     }
 
 }
+console.dir( takeOffData )
+test();
