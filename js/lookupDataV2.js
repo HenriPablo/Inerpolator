@@ -2,18 +2,13 @@ var takeOffData = {
 	grossWeightLb: {
 
 		"2200": {
-
-
 			"0": {
-
-
 				"0": {
 					"15": {
 						"groundRoll": 345,
 						"takeOffDistance": 680
 					}
 				},
-
 
 				"2500": {
 					"10": {
@@ -22,15 +17,13 @@ var takeOffData = {
 					}
 				},
 
-
 				"5000": {
 					"5": {
 						"groundRoll": 100,
 						"takeOffDistance": 275
 					}
 				},
-
-
+				
 				"7500": {
 					"0": {
 						"groundRoll": 580,
@@ -39,8 +32,6 @@ var takeOffData = {
 				}
 
 			},
-
-
 			"15": {
 
 
