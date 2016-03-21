@@ -688,7 +688,7 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                             weight[ nextWeight ] = Object();
                             nextWeight = nextWeight + 100;
                         }
-                    }
+                    }// END weight filler
 
                     if( parseInt( key ) == parseInt( interpol.givenWeight) ){
                         tempWeight = {};
@@ -703,9 +703,6 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
             }/* end init loop of WEIGHTS */
             /* go over the list and use get LOW and HIGH values */
 
-            /*for( var v in tempWeight ){
-             console.log( "v in temp weight: " + tempWeight[v] );
-             }*/
 
             /* ADD WEIGHT(S) TO TREE */
             var nearestWeights = interpol.getLowAndHigh( tempWeight, interpol.givenWeight );
