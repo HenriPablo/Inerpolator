@@ -680,11 +680,20 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                 if (weight.hasOwnProperty(key)) {
                     
                     /* add headwind placeholders if they don't exist for existing weights*/
-                    var ii = 0;
-                    for( ii; ii <= 30; ii = ii + 5){
-                        if( typeof weight[ key ][ii] === "undefined"){
-                            weight[ key ][ ii ] = 0;
+                    var headwindCounter = 0;
+                    for( headwindCounter; headwindCounter <= 30; headwindCounter = headwindCounter + 5){
+                        if( typeof weight[ key ][headwindCounter] === "undefined"){
+                            weight[ key ][ headwindCounter ] = 0;
                         }
+
+                        /* start ALTITUDE FILLER */
+                        var altitudeCounter = 0
+                        for( altitudeCounter; altitudeCounter <= 7500; altitudeCounter = altitudeCounter + 500 ){
+                            if( typeof weight[key][headwindCounter][altitudeCounter] === "undefined"){
+                                weight[key][headwindCounter][altitudeCounter] = 0;
+                            }
+                        }/* end ALTITUDE FILLER */
+
                     }/* end wind placeholders */
 
                     nextWeight = parseInt( key ) + 100 ;
@@ -701,8 +710,19 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                             for( i; i <= 30; i = i+5 ){
                             if( typeof weight[ nextWeight][i] === "undefined" ){
                                 weight[ nextWeight][ i ] = 0;
-                                }
+                            }
+
                             }/* end wind placeholders */
+
+                            /* start ALTITUDE FILLER */
+                            var altitudeCounter = 0
+                            for( altitudeCounter; altitudeCounter <= 7500; altitudeCounter = altitudeCounter + 500 ){
+                                if( typeof weight[nextWeight][i][altitudeCounter] === "undefined"){
+                                    weight[nextWeight][i][altitudeCounter] = 0;
+                                }
+                            }/* end ALTITUDE FILLER */
+
+
                             nextWeight = nextWeight + 100;
                         }
                     }// END weight filler
