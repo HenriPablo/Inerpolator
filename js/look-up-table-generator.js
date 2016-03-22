@@ -705,21 +705,8 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                             }/* end wind placeholders */
                             nextWeight = nextWeight + 100;
                         }
-
                     }// END weight filler
-
-
-
-                    if( parseInt( key ) == parseInt( interpol.givenWeight) ){
-                        tempWeight = {};
-                        tempWeight[ key ] = {};
-                        break;
-                    } else {
-                        var xx =  key;
-
-                        tempWeight[ xx ] = {};
-                    }
-                }
+                }/* end IF WEIGHT HAS KEY */
             }/* end init loop of WEIGHTS */
             
 
