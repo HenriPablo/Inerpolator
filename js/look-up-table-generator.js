@@ -10,7 +10,7 @@ var interpol = {
 
     STANDARD_TEMP               : 15, // standard temperature at sea level 15 degrees Celsius
     WEIGHT_INCREMENT_UNIT       : 100,
-    MAX_WEIGHT                  :5500, // look up table will be populated up to this widht
+    MAX_WEIGHT                  : 3000, //5500, // look up table will be populated up to this widht
     DISTANCE_INCREMENT_UNIT     : 100,
     ALTITUDE_INCREMENT_UNIT     : 100,
     HEAD_WIND_INCREMENT_UNIT    : 5,
@@ -678,6 +678,15 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
             var nextWeight = 0;
             for( var key in weight ) {
                 if (weight.hasOwnProperty(key)) {
+                    
+                    /* add headwind placeholders if they don't exist for existing weights*/
+                    var ii = 0;
+                    for( ii; ii <= 30; ii = ii + 5){
+                        if( typeof weight[ key ][ii] === "undefined"){
+                            weight[ key ][ ii ] = 0;
+                        }
+                    }/* end wind placeholders */
+
                     nextWeight = parseInt( key ) + 100 ;
 
                     // fill in missing weight in 100 LB increments
@@ -686,9 +695,20 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                             break
                         } else {
                             weight[ nextWeight ] = Object();
+
+                            /* add headwind placeholders if they don't exist for existing weights*/
+                            var i = 0
+                            for( i; i <= 30; i = i+5 ){
+                            if( typeof weight[ nextWeight][i] === "undefined" ){
+                                weight[ nextWeight][ i ] = 0;
+                                }
+                            }/* end wind placeholders */
                             nextWeight = nextWeight + 100;
                         }
+
                     }// END weight filler
+
+
 
                     if( parseInt( key ) == parseInt( interpol.givenWeight) ){
                         tempWeight = {};
@@ -701,204 +721,8 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                     }
                 }
             }/* end init loop of WEIGHTS */
-            /* go over the list and use get LOW and HIGH values */
+            
 
-
-            /* ADD WEIGHT(S) TO TREE */
-            var nearestWeights = interpol.getLowAndHigh( tempWeight, interpol.givenWeight );
-
-            if( nearestWeights.low == nearestWeights.high ){
-                nearest.lowAndHighWeightsMatch = true;
-            } else {
-                nearest.lowAndHighWeightsMatch = false;
-            }
-
-            if(nearestWeights.low == interpol.givenWeight /* nearestWeights.high */ ){
-                tree[ nearestWeights.low ] = {};// nearestWeights.low;
-                nearest.weightMatch = true;
-                nearest.lowWeight.weight = nearestWeights.low;
-                nearest.highWeight.weight = nearestWeights.low;
-                nearest.nearestLowWeight = nearestWeights.low;
-                nearest.nearestHighWeight = nearestWeights.low;
-                weightPath = "lowWeight";
-
-            } else {
-                nearest.weightMatch = false;
-                tree[nearestWeights.low ] = {};//nearestWeights.low;
-                tree[ nearestWeights.high ] = {};//nearestWeights.high;
-
-                if( nearest.nearestLowWeight == -1 ){
-                    nearest.nearestLowWeight = nearestWeights.low;
-                }
-                nearest.lowWeight.weight = nearestWeights.low;
-
-                if( nearest.nearestHighWeight  == -1 ){
-                    nearest.nearestHighWeight = nearestWeights.high;
-                }
-                nearest.highWeight.weight = nearestWeights.high;
-            }
-
-
-            /* check headwinds */
-            var lowAndHighHeadwinds;
-
-            for( key in tree ){
-                if( takeOffData["grossWeightLb"].hasOwnProperty( key )){
-                    //console.dir( takeOffData["grossWeightLb"][ key ] )
-                    lowAndHighHeadwinds = interpol.getLowAndHigh( takeOffData["grossWeightLb"][ key ], interpol.givenHeadWind );
-
-                    if( interpol.givenHeadWind == "headwindLookUpValueNotAvailable"){
-                        lowAndHighHeadwinds.low = "headwindLookUpValueNotAvailable";
-                        lowAndHighHeadwinds.high = "headwindLookUpValueNotAvailable";
-                    }
-                    if( lowAndHighHeadwinds.low == lowAndHighHeadwinds.high ){
-                        nearest.lowAndHighHeadwindsMatch = true;
-                    } else {
-                        nearest.lowAndHighHeadwindsMatch = false;
-                    }
-
-                    if( lowAndHighHeadwinds.low == interpol.givenHeadWind /* lowAndHighHeadwinds.high */ ){
-                        nearest.headWindMatch = true;
-                        tree[ key ] [ lowAndHighHeadwinds.low ] = {};
-                        nearest.lowWeight.lowWind.speed = lowAndHighHeadwinds.low;
-
-                        nearest.nearestLowHeadwind = lowAndHighHeadwinds.low;
-                        nearest.nearestHighHeadwind = lowAndHighHeadwinds.low;
-                    }   else {
-                        tree[ key ] [ lowAndHighHeadwinds.low ] = {};
-                        tree[ key ] [ lowAndHighHeadwinds.high ] = {};
-
-                        if( nearest.nearestLowHeadwind == -1 ){
-                            nearest.nearestLowHeadwind = lowAndHighHeadwinds.low;
-                        }
-                        if( nearest.nearestHighHeadwind  == -1 ){
-                            nearest.nearestHighHeadwind = lowAndHighHeadwinds.high;
-                        }
-                    }
-                }
-
-                var weight = key;
-
-                /* check altitude and temperature */
-                var lowAndHighAltitudes;
-                for( key in tree[weight] ){
-                    if( takeOffData["grossWeightLb"][ weight ].hasOwnProperty( key ) ){
-                        lowAndHighAltitudes = interpol.getLowAndHigh( takeOffData["grossWeightLb"][ weight ][ key ], interpol.givenPressuerAltitude );
-
-                        if( lowAndHighAltitudes.low == lowAndHighAltitudes.high){
-                            nearest.lowAndHighAltitudesMatch = true;
-                        } else {
-                            nearest.lowAndHighAltitudesMatch = false;
-                        }
-                        if( lowAndHighAltitudes.low == interpol.givenPressuerAltitude /* lowAndHighAltitudes.high */){
-                            nearest.altitudeMatch = true;
-                            tree[ weight ][ key ][ lowAndHighAltitudes.low ] = {};
-                        } else {
-                            nearest.altitudeMatch = false;
-                            tree[ weight ][ key ][ lowAndHighAltitudes.low ] = {};
-                            tree[ weight ][ key ][ lowAndHighAltitudes.high ] = {};
-                        }
-
-
-
-                        if( nearest.nearestLowAltitude == -1 ){
-                            nearest.nearestLowAltitude = lowAndHighAltitudes.low ;
-                        }
-                        if(  nearest.nearestHighAltitude == -1 ){
-                            nearest.nearestHighAltitude  = lowAndHighAltitudes.high;
-                        }
-                    }
-
-                    var headwinds = key;
-                    var lowAndHighTemperatures;
-                    for( key in tree[ weight ][ headwinds ]){
-                        if( takeOffData["grossWeightLb"][ weight ][ headwinds ].hasOwnProperty( key )  ){
-                            lowAndHighTemperatures = interpol.getLowAndHigh( takeOffData["grossWeightLb"][ weight ][ headwinds ][key ], interpol.givenTemperature );
-
-                            if(( lowAndHighTemperatures.low == interpol.givenTemperature ) ||
-                                ( lowAndHighTemperatures.high == interpol.givenTemperature )){
-                                nearest.temperatureMatch = true;
-                            }
-
-                            if( lowAndHighTemperatures.low == lowAndHighTemperatures.high ){
-                                nearest.lowAndHighTemperatureMatch = true;
-                                tree[ weight ][ headwinds ][key][ lowAndHighTemperatures.low ] = {};
-                            } else {
-                                tree[ weight ][ headwinds ][key][ lowAndHighTemperatures.low ] = {};
-                                tree[ weight ][ headwinds ][key][ lowAndHighTemperatures.high ] = {};
-
-                                nearest.lowAndHighTemperatureMatch = false;
-                            }
-
-                            if( nearest.nearestLowTemperature == -1 ){
-                                nearest.nearestLowTemperature = lowAndHighTemperatures.low ;
-                            }
-                            if( nearest.nearestHighTemperature == -1 ){
-                                nearest.nearestHighTemperature = lowAndHighTemperatures.high;
-                            }
-                        }
-                        var altitude = key;
-                        var calculateAble;
-                        for( key in tree[ weight ][ headwinds ][ altitude ]){
-                            if( takeOffData["grossWeightLb"][ weight ][ headwinds ][altitude ].hasOwnProperty( key )){
-                                tree[ weight ][ headwinds ][ altitude ][ key ]["groundRoll"] = takeOffData["grossWeightLb"][ weight ][ headwinds ][altitude][key ][ "groundRoll"];
-                                tree[ weight ][ headwinds ][ altitude ][ key ]["takeOffDistance"] = takeOffData["grossWeightLb"][ weight ][ headwinds ][altitude][key ][ "takeOffDistance"];
-
-                                temporaryGroundRoll.push( takeOffData["grossWeightLb"][ weight ][ headwinds ][altitude][key ][ "groundRoll"] );
-
-                                temporaryTakeOffDistance.push( takeOffData["grossWeightLb"][ weight ][ headwinds ][altitude][key ][ "takeOffDistance"] );
-
-                                if( temporaryGroundRoll.length == 2 ){
-                                    nearest.nearestLowGroundRoll = temporaryGroundRoll[0];
-                                    nearest.nearestHighGroundRoll = temporaryGroundRoll[1];
-                                }
-                                if( temporaryGroundRoll.length == 4 ){
-                                    nearest.nearestLowGroundRoll2 = temporaryGroundRoll[2];
-                                    nearest.nearestHighGroundRoll2 = temporaryGroundRoll[3];
-                                }
-
-                                if( temporaryGroundRoll.length == 6 ){
-                                    nearest.nearestLowGroundRoll3 = temporaryGroundRoll[4];
-                                    nearest.nearestHighGroundRoll3 = temporaryGroundRoll[5];
-                                }
-
-                                if( temporaryGroundRoll.length == 8 ){
-                                    nearest.nearestLowGroundRoll4 = temporaryGroundRoll[6];
-                                    nearest.nearestHighGroundRoll4 = temporaryGroundRoll[7];
-                                }
-
-
-
-                                if( temporaryTakeOffDistance.length == 2 ){
-                                    nearest.nearestLowTakeOffDistance = temporaryTakeOffDistance[0];
-                                    nearest.nearestHighTakeOffDistance = temporaryTakeOffDistance[1];
-                                }
-                                if( temporaryTakeOffDistance.length == 4 ){
-                                    nearest.nearestLowTakeOffDistance2 = temporaryTakeOffDistance[2];
-                                    nearest.nearestHighTakeOffDistance2 = temporaryTakeOffDistance[3];
-                                }
-
-                                if( temporaryTakeOffDistance.length == 6 ){
-                                    nearest.nearestLowTakeOffDistance3 = temporaryTakeOffDistance[4];
-                                    nearest.nearestHighTakeOffDistance3 = temporaryTakeOffDistance[5];
-                                }
-
-                                if( temporaryTakeOffDistance.length == 8 ){
-                                    nearest.nearestLowTakeOffDistance4 = temporaryTakeOffDistance[6];
-                                    nearest.nearestHighTakeOffDistance4 = temporaryTakeOffDistance[7];
-                                }
-
-
-
-
-
-
-                            }
-
-                        }/* altitudes - temperatures loop */
-                    }/* headwinds loop */
-                }/* weights loop */
-            }/* outter tree loop */
         }/* if takeoff data has gross weight */
     } /* end takeOffData LOOP */
 
