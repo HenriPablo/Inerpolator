@@ -690,7 +690,7 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                         var altitudeCounter = 0
                         for( altitudeCounter; altitudeCounter <= 7500; altitudeCounter = altitudeCounter + 500 ){
                             if( typeof weight[key][headwindCounter][altitudeCounter] === "undefined"){
-                                weight[key][headwindCounter][altitudeCounter] = 0;
+                                weight[key][headwindCounter][altitudeCounter] = Object();
                             }
                         }/* end ALTITUDE FILLER */
 
@@ -708,19 +708,17 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                             /* add headwind placeholders if they don't exist for existing weights*/
                             var i = 0
                             for( i; i <= 30; i = i+5 ){
-                            if( typeof weight[ nextWeight][i] === "undefined" ){
-                                weight[ nextWeight][ i ] = 0;
-                            }
-
-                            }/* end wind placeholders */
-
-                            /* start ALTITUDE FILLER */
-                            var altitudeCounter = 0
-                            for( altitudeCounter; altitudeCounter <= 7500; altitudeCounter = altitudeCounter + 500 ){
-                                if( typeof weight[nextWeight][i][altitudeCounter] === "undefined"){
-                                    weight[nextWeight][i][altitudeCounter] = 0;
+                                if( typeof weight[ nextWeight][i] === "undefined" ){
+                                    weight[ nextWeight][ i ] = Object();
                                 }
-                            }/* end ALTITUDE FILLER */
+                                /* start ALTITUDE FILLER */
+                                var altitudeCounter = 0
+                                for( altitudeCounter; altitudeCounter <= 7500; altitudeCounter = altitudeCounter + 500 ){
+                                    if( typeof weight[nextWeight][i][altitudeCounter] === "undefined"){
+                                        weight[nextWeight][i][altitudeCounter] = Object();
+                                    }
+                                }/* end ALTITUDE FILLER */
+                            }/* end wind placeholders */
 
 
                             nextWeight = nextWeight + 100;
