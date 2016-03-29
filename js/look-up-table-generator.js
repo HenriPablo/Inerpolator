@@ -683,14 +683,39 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                     var headwindCounter = 0;
                     for( headwindCounter; headwindCounter <= 30; headwindCounter = headwindCounter + 5){
                         if( typeof weight[ key ][headwindCounter] === "undefined"){
-                            weight[ key ][ headwindCounter ] = 0;
+                            weight[ key ][ headwindCounter ] = Object();
                         }
 
                         /* start ALTITUDE FILLER */
                         var altitudeCounter = 0
+                        var lastKnownTemperature = 0;
                         for( altitudeCounter; altitudeCounter <= 7500; altitudeCounter = altitudeCounter + 500 ){
                             if( typeof weight[key][headwindCounter][altitudeCounter] === "undefined"){
                                 weight[key][headwindCounter][altitudeCounter] = Object();
+                            }
+
+                            /* FILL TEMPERATURES */
+                            if( typeof weight[key][headwindCounter][altitudeCounter] !== "undefined"
+                                &&
+                                typeof Object.keys( weight[key][headwindCounter][altitudeCounter])[0] !== "undefined" ){
+                                lastKnownTemperature = Object.keys( weight[key][headwindCounter][altitudeCounter])[0];
+                            }
+                            if(
+                                typeof weight[key][headwindCounter][altitudeCounter] !== "undefined"
+                                &&
+                                typeof Object.keys( weight[key][headwindCounter][altitudeCounter])[0] === "undefined"
+
+                            ) {
+                                    lastKnownTemperature = lastKnownTemperature -1;
+                                    weight[key][headwindCounter][altitudeCounter][lastKnownTemperature] = Object();
+                                    weight[key][headwindCounter][altitudeCounter][lastKnownTemperature]  = {'groundRoll':0, 'takeOffDistance': 0 };
+                             }
+                            /* END FILL TEMPERATURES */
+
+
+                            /* re-set last known temp to standard temp at sea level of 15 */
+                            if( lastKnownTemperature == 0){
+                                lastKnownTemperature = 15;
                             }
                         }/* end ALTITUDE FILLER */
 
@@ -713,12 +738,18 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                                 }
                                 /* start ALTITUDE FILLER */
                                 var altitudeCounter = 0
+                                var fillerTemperature = 15;
                                 for( altitudeCounter; altitudeCounter <= 7500; altitudeCounter = altitudeCounter + 500 ){
                                     if( typeof weight[nextWeight][i][altitudeCounter] === "undefined"){
                                         weight[nextWeight][i][altitudeCounter] = Object();
+                                        weight[nextWeight][i][altitudeCounter] [ fillerTemperature] = {'groundRoll':0, 'takeOffDistance': 0 };
+                                        fillerTemperature = fillerTemperature - 1;
                                     }
                                 }/* end ALTITUDE FILLER */
                             }/* end wind placeholders */
+                            if( fillerTemperature == 0 ){
+                                fillerTemperature = 15;
+                            }
 
 
                             nextWeight = nextWeight + 100;
@@ -748,6 +779,7 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
 
     }
 
-}
-console.dir( takeOffData )
+};
 test();
+console.dir( takeOffData )
+
