@@ -697,16 +697,22 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                             /* FILL TEMPERATURES */
                             if( typeof weight[key][headwindCounter][altitudeCounter] !== "undefined"
                                 &&
-                                typeof Object.keys( weight[key][headwindCounter][altitudeCounter])[0] !== "undefined" ){
+                                typeof Object.keys( weight[key][headwindCounter][altitudeCounter])[0] !== "undefined" )
+                            {
                                 lastKnownTemperature = Object.keys( weight[key][headwindCounter][altitudeCounter])[0];
                             }
+
                             if(
                                 typeof weight[key][headwindCounter][altitudeCounter] !== "undefined"
                                 &&
                                 typeof Object.keys( weight[key][headwindCounter][altitudeCounter])[0] === "undefined"
 
                             ) {
-                                    lastKnownTemperature = lastKnownTemperature -1;
+                                    if( lastKnownTemperature == 0){
+                                        lastKnownTemperature = 15;
+                                    } else{
+                                        lastKnownTemperature = lastKnownTemperature -1;
+                                    }
                                     weight[key][headwindCounter][altitudeCounter][lastKnownTemperature] = Object();
                                     weight[key][headwindCounter][altitudeCounter][lastKnownTemperature]  = {'groundRoll':0, 'takeOffDistance': 0 };
                              }
@@ -714,9 +720,7 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
 
 
                             /* re-set last known temp to standard temp at sea level of 15 */
-                            if( lastKnownTemperature == 0){
-                                lastKnownTemperature = 15;
-                            }
+
                         }/* end ALTITUDE FILLER */
 
                     }/* end wind placeholders */
