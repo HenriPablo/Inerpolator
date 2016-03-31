@@ -521,7 +521,7 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
     interpol.givenTemperature = givenTemperature;
     interpol.givenPressuerAltitude = givenPressureAltitude;
 
-    var tree = {};
+    //var tree = {};
 
     var nearest = {
         "weightMatch": false,
@@ -693,6 +693,13 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                             if( typeof weight[key][headwindCounter][altitudeCounter] === "undefined"){
                                 weight[key][headwindCounter][altitudeCounter] = Object();
                             }
+                            else{
+                                console.log( 'getting ready to interpolate ')
+                                if( typeof weight[key][headwindCounter][altitudeCounter][0] !== "undefined"){
+                                    console.log( weight[key][headwindCounter][altitudeCounter][0].groundRoll)
+                                    console.log( weight[key][headwindCounter][altitudeCounter][0].takeOffDistance )
+                                }
+                            }
 
                             /* FILL TEMPERATURES */
                             if( typeof weight[key][headwindCounter][altitudeCounter] !== "undefined"
@@ -708,18 +715,17 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                                 typeof Object.keys( weight[key][headwindCounter][altitudeCounter])[0] === "undefined"
 
                             ) {
-                                    if( lastKnownTemperature == 0){
+                                /* re-set last known temp to standard temp at sea level of 15 */
+                                if( lastKnownTemperature == 0){
                                         lastKnownTemperature = 15;
                                     } else{
                                         lastKnownTemperature = lastKnownTemperature -1;
                                     }
-                                    weight[key][headwindCounter][altitudeCounter][lastKnownTemperature] = Object();
-                                    weight[key][headwindCounter][altitudeCounter][lastKnownTemperature]  = {'groundRoll':0, 'takeOffDistance': 0 };
-                             }
+                                weight[key][headwindCounter][altitudeCounter][lastKnownTemperature] = Object();
+                                weight[key][headwindCounter][altitudeCounter][lastKnownTemperature]  = {'groundRoll':0, 'takeOffDistance': 0 };
+                            }
+
                             /* END FILL TEMPERATURES */
-
-
-                            /* re-set last known temp to standard temp at sea level of 15 */
 
                         }/* end ALTITUDE FILLER */
 
@@ -755,7 +761,6 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                                 fillerTemperature = 15;
                             }
 
-
                             nextWeight = nextWeight + 100;
                         }
                     }// END weight filler
@@ -779,9 +784,7 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
         }
         return t1
     }
-    function getNearestAltitude(){
 
-    }
 
 };
 test();
