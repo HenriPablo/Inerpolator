@@ -120,7 +120,7 @@ var interpol = {
     },
 
     getFinalTakeOffDistance : function( adjustedDistance, givenAltitude, lowAltitude, increaseUnit ){
-       return adjustedDistance  + (( givenAltitude - lowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnit;
+        return adjustedDistance  + (( givenAltitude - lowAltitude ) / interpol.ALTITUDE_INCREMENT_UNIT ) * increaseUnit;
     },
 
     getIncreaseUnitByTemperature : function( distance, highTemperature, lowTemperature ){
@@ -472,7 +472,7 @@ var interpol = {
             var increaseUnitA = interpol.getIncreaseUnitByTemperature( distanceDiffA , d.nearestHighTemperature, d.nearestLowTemperature);
             lowDistanceA = interpol.getFinalTakeOffDistanceByTemperature( lowDistanceA, q.temperature, d.nearestLowTemperature, increaseUnitA ); // 2,225
 
-	        var increaseUnitB = interpol.getIncreaseUnitByTemperature( distanceDiffB, d.nearestHighTemperature, d.nearestLowTemperature );
+            var increaseUnitB = interpol.getIncreaseUnitByTemperature( distanceDiffB, d.nearestHighTemperature, d.nearestLowTemperature );
             lowDistanceB = interpol.getFinalTakeOffDistanceByTemperature( lowDistanceB, d.nearestHighTemperature, q.temperature, increaseUnitB );// 2,465
 
             var n6Diff = lowDistanceB - lowDistanceA; // 240
@@ -678,7 +678,7 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
             var nextWeight = 0;
             for( var key in weight ) {
                 if (weight.hasOwnProperty(key)) {
-                    
+
                     /* add headwind placeholders if they don't exist for existing weights*/
                     var headwindCounter = 0;
                     for( headwindCounter; headwindCounter <= 30; headwindCounter = headwindCounter + 5){
@@ -689,16 +689,17 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                         /* start ALTITUDE FILLER */
                         var altitudeCounter = 0
                         var lastKnownTemperature = 0;
+
+                        var floorGroundRoll = 0;
+                        var ceilingGroundRoll = 0;
+                        var groundRollIncrement = 0;
+
+                        var floorTakeOffDistance = 0;
+                        var ceilingTakeOffDistance = 0;
+
                         for( altitudeCounter; altitudeCounter <= 7500; altitudeCounter = altitudeCounter + 500 ){
                             if( typeof weight[key][headwindCounter][altitudeCounter] === "undefined"){
                                 weight[key][headwindCounter][altitudeCounter] = Object();
-                            }
-                            else{
-                                console.log( 'getting ready to interpolate ')
-                                if( typeof weight[key][headwindCounter][altitudeCounter][0] !== "undefined"){
-                                    console.log( weight[key][headwindCounter][altitudeCounter][0].groundRoll)
-                                    console.log( weight[key][headwindCounter][altitudeCounter][0].takeOffDistance )
-                                }
                             }
 
                             /* FILL TEMPERATURES */
@@ -707,6 +708,32 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                                 typeof Object.keys( weight[key][headwindCounter][altitudeCounter])[0] !== "undefined" )
                             {
                                 lastKnownTemperature = Object.keys( weight[key][headwindCounter][altitudeCounter])[0];
+                               //console.log( "ground rolls2: " + weight[key][headwindCounter][altitudeCounter][lastKnownTemperature].groundRoll);
+
+                                if( floorGroundRoll == 0 ){
+                                    floorGroundRoll = weight[key][headwindCounter][altitudeCounter][lastKnownTemperature].groundRoll;
+                                    floorTakeOffDistance = weight[key][headwindCounter][altitudeCounter][lastKnownTemperature].takeOffDistance;
+                                } else {
+                                    //ceilingGroundRoll = floorGroundRoll;
+                                    if( weight[key][headwindCounter][altitudeCounter][lastKnownTemperature].groundRoll > 0 ){
+                                        ceilingGroundRoll = weight[key][headwindCounter][altitudeCounter][lastKnownTemperature].groundRoll;
+                                        ceilingTakeOffDistance = weight[key][headwindCounter][altitudeCounter][lastKnownTemperature].takeOffDistance;
+                                    }
+                                }
+                                if( floorGroundRoll > 0 && ceilingGroundRoll > 0){
+                                    console.log( 'getting ready to interpolate ')
+                                    //console.log( "ceilingGroundRoll: " + floorGroundRoll);
+                                    //console.log( "ceilingGroundRoll: " + ceilingGroundRoll );
+                                    console.log( "floorGroundRoll - ceilingGroundRoll: " + (floorGroundRoll - ceilingGroundRoll) );
+                                    console.log( 'increment unit: ' + ( (floorGroundRoll - ceilingGroundRoll)/5 ));
+                                    groundRollIncrement = (floorGroundRoll - ceilingGroundRoll)/5 ;
+                                }
+                                console.log( "floorGroundRoll: " + floorGroundRoll)
+                                console.log( "ceilingGroundRoll: " + ceilingGroundRoll)
+
+                                //console.log( "floorTakeOffDistance: " + floorTakeOffDistance )
+                                //console.log( "ceilingTakeOffDistance: " + ceilingTakeOffDistance )
+
                             }
 
                             if(
@@ -717,17 +744,18 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                             ) {
                                 /* re-set last known temp to standard temp at sea level of 15 */
                                 if( lastKnownTemperature == 0){
-                                        lastKnownTemperature = 15;
-                                    } else{
-                                        lastKnownTemperature = lastKnownTemperature -1;
-                                    }
+                                    lastKnownTemperature = 15;
+                                } else{
+                                    lastKnownTemperature = lastKnownTemperature -1;
+                                }
+                                console.log( "incremented ground roll: " + (floorGroundRoll + groundRollIncrement))
                                 weight[key][headwindCounter][altitudeCounter][lastKnownTemperature] = Object();
-                                weight[key][headwindCounter][altitudeCounter][lastKnownTemperature]  = {'groundRoll':0, 'takeOffDistance': 0 };
+                                weight[key][headwindCounter][altitudeCounter][lastKnownTemperature]  = {'groundRoll':(floorGroundRoll + groundRollIncrement), 'takeOffDistance': 0 };
                             }
 
                             /* END FILL TEMPERATURES */
 
-                        }/* end ALTITUDE FILLER */
+                        }/* end ALTITUDE FILLER loop */
 
                     }/* end wind placeholders */
 
@@ -766,7 +794,7 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
                     }// END weight filler
                 }/* end IF WEIGHT HAS KEY */
             }/* end init loop of WEIGHTS */
-            
+
 
         }/* if takeoff data has gross weight */
     } /* end takeOffData LOOP */
@@ -789,4 +817,3 @@ function test( givenWeight, givenHeadwind, givenTemperature, givenPressureAltitu
 };
 test();
 console.dir( takeOffData )
-
